@@ -10,9 +10,21 @@ It covers the following cases:
 
 
 ## Installation (Icinga):
+
+**TODO:** Add documentation
+
 ## Installation (Icinga2):
+
+**TODO:** Add documentation
+
 ## Command Line Options:
 
+| Option | Triggers what? | Mandatory? | Default value |
+| --- | --- | --- | --- |
+| -h | Renders the help / usage information | no | n/a |
+| -z | Sets the zone / domain to validate, e.g. "myhostedwebsite.example.net" | yes | n/a |
+| -a | Sets the IP address of the server to check | yes | n/a |
+| -f | Sets the FQDN or HELO of the server we're checking | yes | n/a |
 
 ## TODO:
 
