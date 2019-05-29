@@ -19,16 +19,74 @@ I suggest installing via the Package repositories of your Operating System. For 
 
 **TODO:** Fix the installation section! It doesn't work out of the box e.g. on a MacBook.
 
+## Configuration (Icinga2):
 
-## Installation (Icinga or Nagios):
+Clone this repository into the directory where you have all your other plugins, for Icinga on Ubuntu, this is probably `/usr/lib/nagios/plugins` but could be somewhere else on your system:
+
+	cd /usr/lib/nagios/plugins
+	git clone https://github.com/mrimann/check_website_spf.git
+
+To add the command check to your Icinga2 installation, first add the following command definition e.g. to `/etc/icinga2/conf.d/commands.conf`:
+
+	# 'check_website_spf' command definition
+	object CheckCommand "website_spf" {
+		import "plugin-check-command"
+		command = [ PluginDir + "/check_website_spf.sh" ]
+	
+		arguments = {
+			"-z" = {
+				required = true
+				value = "$zone$"
+			}
+			"-a" = {
+				required = true
+				value = "$address$"
+			}
+			"-f" = {
+				required = true
+				value = "$fqdn$"
+			}
+		}
+	}
+
+Then add a service definition e.g. to `/etc/icinga2/conf.d/services.conf`:
+
+	apply Service for (zone => zoneConfig in host.vars.https_vhosts) {
+		import "generic-service"
+		display_name = "SPF Policy for " + zoneConfig.domain_name + " IPv4"
+		name = display_name
+
+		# only execute this check every 2h
+		check_interval = 2h
+		retry_interval = 15m
+
+		check_command = "website_spf"
+
+		vars.zone = zoneConfig.domain_name
+		vars.address = host.address
+		vars.fqdn = host.name
+
+		vars += zoneConfig
+
+		ignore where zoneConfig.check_website_spf != 1
+	}
+
+And finally, add a list of the zones to be checked to the hosts definition e.g. `/etc/icinga2/conf.d/hosts.conf`:
+
+    /* SPF Policy Checks -- https://github.com/mrimann/check_website_spf */
+    vars.https_vhosts = ["domain1", "domain2", "domain3" ]
+
+In the above snippet, replace domain1, domain2 and domain3 with the domain-names to be checked.
+
+**Please adapt the above snippets to your needs!!!** (and refer to the documentation of your monitoring system for further details).
+
+
+## Configuration (Icinga or Nagios):
 
 I did never run this check in a Nagios or Icinga (v1) based setup and have no config example to share.
 
 Please have a look at e.g. https://github.com/mrimann/check_dnssec_expiry for inspiration and adapt to this check-script. (pull-requests to add examples to this readme are always appreciated).
 
-## Installation (Icinga2):
-
-**TODO:** Add documentation
 
 ## Command Line Options:
 
