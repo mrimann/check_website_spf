@@ -1,4 +1,4 @@
-# check_website_spf - Icinga / Nagios Plugin to validate SPF records for hosted websites
+# check_website_spf - Monitoring Plugin to validate SPF policy of hosted websites
 
 Goal of this plugin is to monitor proper use of the Sender Policy Framework (SPF) entries in a DNS zone.
 
