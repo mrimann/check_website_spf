@@ -8,10 +8,22 @@ It covers the following cases:
 - Checks the syntactical validity of that policy
 - Checks whether the webserver that delivers the website is allowed to send mails from that domain (relevant for mails from e.g. contact forms or shop order confirmations and the like)
 
+## Requirements
+This script wraps around the [PySPF module for Python](https://pypi.org/project/pyspf/) which results in the following requierments:
+- Python 2.6 or newer
+- several Python dependencies
+
+I suggest installing via the Package repositories of your Operating System. For Ubuntu 18.04 LTS this can be acheived by installing a single package:
+
+```apt-get install python3-spf```
+
+**TODO:** Fix the installation section! It doesn't work out of the box e.g. on a MacBook.
 
 ## Installation (Icinga):
 
-**TODO:** Add documentation
+I did never run this check in a Nagios or Icinga (v1) based setup and have no config example to share.
+
+Please have a look at e.g. https://github.com/mrimann/check_dnssec_expiry for inspiration and adapt to this check-script. (pull-requests to add examples to this readme are always appreciated).
 
 ## Installation (Icinga2):
 
