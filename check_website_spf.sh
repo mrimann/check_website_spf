@@ -91,7 +91,10 @@ if [ -z "$checkTxtRecord" ]; then
 fi
 
 # Execute the check against PySPF
-pySpfResult=$( docker run docker-spf:bionic python3 /usr/lib/python3/dist-packages/spf.py ${ip} no-reply@${zone} ${fqdn})
+pySpfResult=$( python3 /usr/lib/python3/dist-packages/spf.py ${ip} no-reply@${zone} ${fqdn})
+
+# do that against the local docker container (work-around for MacOS based DEV environment, ...)
+#pySpfResult=$( docker run docker-spf:bionic python3 /usr/lib/python3/dist-packages/spf.py ${ip} no-reply@${zone} ${fqdn})
 
 # determine if we need to alert
 checkResultStatus=$( echo $pySpfResult | grep "result" | grep "pass" )
