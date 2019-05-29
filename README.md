@@ -19,7 +19,8 @@ I suggest installing via the Package repositories of your Operating System. For 
 
 **TODO:** Fix the installation section! It doesn't work out of the box e.g. on a MacBook.
 
-## Installation (Icinga):
+
+## Installation (Icinga or Nagios):
 
 I did never run this check in a Nagios or Icinga (v1) based setup and have no config example to share.
 
