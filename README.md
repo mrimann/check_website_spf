@@ -101,6 +101,10 @@ Please have a look at e.g. https://github.com/mrimann/check_dnssec_expiry for in
 
 Well, it needs some serious testing to be honest - please provide feedback on whether the plugin helped and in which environment you tested it.
 
+### Ideas to improve
+
+- output the read SPF-Policy in the status-output (to make understanding the PySPF result a bit easier to understand)
+
 
 ## How to contribute?
 
