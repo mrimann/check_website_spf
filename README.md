@@ -4,7 +4,8 @@ Goal of this plugin is to monitor proper use of the Sender Policy Framework (SPF
 
 It covers the following cases:
 
-- Checks the presence of an SPF policy
+- Checks the presence of an SPF policy (by default it's OK to have no published SPF policy at all)
+- Optionally alerts on missing SPF policy for a domain, for cases where you want to make sure that the domains **must** have a policy
 - Checks the syntactical validity of that policy
 - Checks whether the webserver that delivers the website is allowed to send mails from that domain (relevant for mails from e.g. contact forms or shop order confirmations and the like)
 - Shows the current SPF policy for a domain
@@ -35,6 +36,9 @@ To add the command check to your Icinga2 installation, first add the following c
 		command = [ PluginDir + "/check_website_spf.sh" ]
 	
 		arguments = {
+			"-m" = {
+				set_if = "$must_have_spf_policy$"
+			}
 			"-z" = {
 				required = true
 				value = "$zone$"
@@ -63,6 +67,7 @@ Then add a service definition e.g. to `/etc/icinga2/conf.d/services.conf`:
 
 		check_command = "website_spf"
 
+		vars.must_have_spf_policy = zoneConfig.must_have_spf_policy
 		vars.zone = zoneConfig.domain_name
 		vars.address = host.address
 		vars.fqdn = host.name
@@ -70,12 +75,29 @@ Then add a service definition e.g. to `/etc/icinga2/conf.d/services.conf`:
 		vars += zoneConfig
 
 		ignore where zoneConfig.check_website_spf != 1
+        ignore where zoneConfig.domain_name == ""
 	}
 
 And finally, add a list of the zones to be checked to the hosts definition e.g. `/etc/icinga2/conf.d/hosts.conf`:
 
     /* SPF Policy Checks -- https://github.com/mrimann/check_website_spf */
-    vars.https_vhosts = ["domain1", "domain2", "domain3" ]
+    vars.https_vhosts["domain1.tld"] = {
+        domain_name = "domain1.tld"
+    }
+    vars.https_vhosts["domain2.tld"] = {
+    }
+    vars.https_vhosts["domain3.tld"] = {
+        domain_name = "domain3.tld"
+        must_have_spf_policy = true
+    }
+
+**Explanation**
+
+The above example config will result in the following:
+
+- domain1.tld will be tested for having a valid SPF policy, but in case there's **no** policy at all, that's fine too
+- domain2.tld will not get any SPF checks (because "domain_name" is not set - this can be helpful if you e.g. have multiple subdomains like www.foo.tld and blog.foo.tld on the same webserver, only set "domain_name" on the one that should get the SPF check for the primary domain)
+- domain3.tld will be tested and create an alert if there's no SPF policy, or if the existing policy is not valid
 
 In the above snippet, replace domain1, domain2 and domain3 with the domain-names to be checked.
 
@@ -94,6 +116,7 @@ Please have a look at e.g. https://github.com/mrimann/check_dnssec_expiry for in
 | Option | Triggers what? | Mandatory? | Default value |
 | --- | --- | --- | --- |
 | -h | Renders the help / usage information | no | n/a |
+| -m | Flag to set "must have an SPF policy", if set, a WARNING is given in case the tested domain does not have an SPF-Policy at all | no | no |
 | -z | Sets the zone / domain to validate, e.g. "myhostedwebsite.example.net" | yes | n/a |
 | -a | Sets the IP address of the server to check | yes | n/a |
 | -f | Sets the FQDN or HELO of the server we're checking | yes | n/a |
