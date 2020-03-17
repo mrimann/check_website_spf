@@ -1,4 +1,4 @@
-# check_website_spf - Monitoring Plugin to validate SPF policy of hosted websites
+# check_website_spf - Monitoring Plugin to validate SPF Policy of hosted websites
 
 Goal of this plugin is to monitor proper use of the Sender Policy Framework (SPF) entries in a DNS zone.
 
@@ -7,6 +7,7 @@ It covers the following cases:
 - Checks the presence of an SPF policy
 - Checks the syntactical validity of that policy
 - Checks whether the webserver that delivers the website is allowed to send mails from that domain (relevant for mails from e.g. contact forms or shop order confirmations and the like)
+- Shows the current SPF policy for a domain
 
 ## Requirements
 This script wraps around the [PySPF module for Python](https://pypi.org/project/pyspf/) which results in the following requierments:

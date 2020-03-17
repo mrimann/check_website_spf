@@ -2,7 +2,7 @@
 
 # check_website_spf.sh
 #
-# Copyright 2019 by Mario Rimann <mario@rimann.org>
+# Copyright 2019-2020 by Mario Rimann <mario@rimann.org>
 # Licensed under the permissive MIT license, see LICENSE.md
 #
 # Development of this script was partially sponsored by my
@@ -99,10 +99,9 @@ pySpfResult=$( python3 /usr/lib/python3/dist-packages/spf.py ${ip} no-reply@${zo
 # determine if we need to alert
 checkResultStatus=$( echo $pySpfResult | grep "result" | grep "pass" )
 if [ -z "$checkResultStatus" ]; then
-	echo "WARNING: SPF policy for domain $zone looks fishy. PySPF result was: $pySpfResult"
+	echo -e "WARNING: SPF policy for domain $zone looks fishy.\nCurrent policy: $checkTxtRecord\nPySPF result was: $pySpfResult"
 	exit 1
 else
-	echo "OK: SPF policy for domain $zone seem to be valid. PySPF result was: $pySpfResult"
+	echo -e "OK: SPF policy for domain $zone seems to be valid.\nCurrent policy: $checkTxtRecord\nPySPF result was: $pySpfResult"
 	exit 0
-
 fi
