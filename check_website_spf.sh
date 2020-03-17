@@ -51,12 +51,12 @@ if [[ ! -e $pathToDig ]]; then
 fi
 
 # TODO: Find a way to properly test it locally on the Mac...
-# Check if PySFP available at all - fail hard if not
-#pathToPySPF="/usr/lib/python3/dist-packages/spf.py"
-#if [[ ! -e $pathToPySPF ]]; then
-#	echo "Cannot find PySPF at $pathToPySPF, well I need it. Giving up. Sorry!"
-#	exit 1
-#fi
+Check if PySFP available at all - fail hard if not
+pathToPySPF="/usr/lib/python3/dist-packages/spf.py"
+if [[ ! -e $pathToPySPF ]]; then
+	echo "Cannot find PySPF at $pathToPySPF, well I need it. Giving up. Sorry!"
+	exit 1
+fi
 
 # Check if we got a zone to validate - fail hard if not
 if [[ -z $zone ]]; then
