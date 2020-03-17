@@ -15,6 +15,9 @@ usage() {
 	cat - >&2 << _EOT_
 Usage: $0 -z <zone> -a <ip address> -f <fqdn>
 
+	-m
+		optional: if this option is set, it's mandatory for the zone to have an
+		SPF policy, not having one in this situation leads to a WARNING
 	-z <zone>
 		specify zone to check
 	-a <ip-address>
@@ -26,8 +29,11 @@ _EOT_
 }
 
 # Parse the input options
-while getopts ":z:a:f:" opt; do
+while getopts ":mz:a:f:" opt; do
   case $opt in
+    m)
+      force=1
+      ;;
     z)
       zone=$OPTARG
       ;;
@@ -86,8 +92,13 @@ fi
 # Check if there's a TXT record at all that qualifies for SPF
 checkTxtRecord=$( dig TXT $zone +short | grep spf )
 if [ -z "$checkTxtRecord" ]; then
-	echo "OK: Domain $zone has no SPF policy right now."
-	exit 0
+		if [[ $force -eq 0 ]]; then
+			echo "OK: Domain $zone has no SPF policy right now."
+			exit 0
+		else
+			echo "WARNING: Domain $zone has no SPF policy right now, but one is required for this domain!"
+			exit 1
+		fi
 fi
 
 # Execute the check against PySPF
